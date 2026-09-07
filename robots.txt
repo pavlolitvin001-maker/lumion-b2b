@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://lumion-pro-b2b.pavlolitvin004.chatgpt.site/sitemap.xml
