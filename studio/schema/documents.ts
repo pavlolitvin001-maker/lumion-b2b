@@ -11,7 +11,7 @@ export const documentTypes = [
     fields: [
       defineField({ name: 'logo', title: 'Логотип', type: 'imageWithAlt' }),
       defineField({ name: 'phone', title: 'Телефон', type: 'string', validation: phone }),
-      defineField({ name: 'email', title: 'Email', type: 'string', validation: (Rule) => Rule.email() }),
+      defineField({ name: 'email', title: 'Email', type: 'string', validation: (Rule) => Rule.email().error('Введіть коректний email') }),
       defineField({ name: 'telegramUrl', title: 'Посилання Telegram', type: 'url', validation: optionalUrl }),
       defineField({ name: 'viberUrl', title: 'Посилання Viber', type: 'url', validation: optionalUrl }),
       defineField({ name: 'otherMessengerUrl', title: 'Інший месенджер', type: 'url', validation: optionalUrl }),
@@ -106,7 +106,7 @@ export const documentTypes = [
   defineType({
     name: 'formTexts', title: 'Тексти форм', type: 'document',
     fields: [
-      defineField({ name: 'sla', title: 'SLA', type: 'string', validation: requiredText(160) }),
+      defineField({ name: 'sla', title: 'SLA', type: 'string', validation: (Rule) => Rule.max(160) }),
       defineField({ name: 'catalogRequest', title: 'Каталог і прайс', type: 'formScenarioText', validation: (Rule) => Rule.required() }),
       defineField({ name: 'objectEstimate', title: 'Прорахунок об’єкта', type: 'formScenarioText', validation: (Rule) => Rule.required() }),
       defineField({ name: 'priorityDelivery', title: 'Пріоритетна доставка', type: 'formScenarioText', validation: (Rule) => Rule.required() }),
@@ -129,7 +129,7 @@ export const documentTypes = [
       defineField({ name: 'gtmId', title: 'GTM ID', type: 'string', validation: (Rule) => Rule.max(80) }),
       defineField({ name: 'ga4Id', title: 'GA4 ID', type: 'string', validation: (Rule) => Rule.max(80) }),
       defineField({ name: 'metaPixelId', title: 'Meta Pixel ID', type: 'string', validation: (Rule) => Rule.max(80) }),
-      defineField({ name: 'managerNotificationEmail', title: 'Email менеджера для сповіщень', type: 'string', validation: (Rule) => Rule.email() }),
+      defineField({ name: 'managerNotificationEmail', title: 'Email менеджера для сповіщень', type: 'string', validation: (Rule) => Rule.email().error('Введіть коректний email') }),
       defineField({ name: 'analyticsEnabled', title: 'Увімкнути аналітику', type: 'boolean', initialValue: false }),
     ],
   }),
