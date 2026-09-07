@@ -26,6 +26,9 @@ export default defineConfig({
   },
   plugins: [
     structureTool({
+      // This is the only Studio tool, so it is also the default route on launch.
+      name: 'content',
+      title: 'Контент',
       structure: (S) =>
         S.list()
           .title('LUMION B2B')
