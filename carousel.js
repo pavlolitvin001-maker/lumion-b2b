@@ -43,11 +43,14 @@
       else draw()
     }
     const resize = () => draw()
-    prev.addEventListener('click', () => move(-1)); next.addEventListener('click', () => move(1))
+    const previous = () => move(-1)
+    const following = () => move(1)
+    prev.addEventListener('click', previous); next.addEventListener('click', following)
     viewport.addEventListener('pointerdown', down); viewport.addEventListener('pointermove', drag)
     viewport.addEventListener('pointerup', release); viewport.addEventListener('pointercancel', release)
     window.addEventListener('resize', resize)
     teardown = () => {
+      prev.removeEventListener('click', previous); next.removeEventListener('click', following)
       viewport.removeEventListener('pointerdown', down); viewport.removeEventListener('pointermove', drag)
       viewport.removeEventListener('pointerup', release); viewport.removeEventListener('pointercancel', release)
       window.removeEventListener('resize', resize)
