@@ -14,6 +14,7 @@ export const documentTypes = [
       defineField({ name: 'email', title: 'Email', type: 'string', validation: (Rule) => Rule.email().error('Введіть коректний email') }),
       defineField({ name: 'telegramUrl', title: 'Посилання Telegram', type: 'url', validation: optionalUrl }),
       defineField({ name: 'viberUrl', title: 'Посилання Viber', type: 'url', validation: optionalUrl }),
+      defineField({ name: 'whatsAppUrl', title: 'Посилання WhatsApp', type: 'url', validation: optionalUrl }),
       defineField({ name: 'otherMessengerUrl', title: 'Інший месенджер', type: 'url', validation: optionalUrl }),
       defineField({ name: 'warehouseAddress', title: 'Адреса складу / шоуруму', type: 'text', rows: 2, validation: (Rule) => Rule.max(240) }),
       defineField({ name: 'workingHours', title: 'Графік роботи', type: 'string', validation: (Rule) => Rule.max(160) }),

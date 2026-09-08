@@ -1,1 +1,59 @@
-(()=>{const carousel=document.querySelector('.case-carousel');if(!carousel)return;const viewport=carousel.querySelector('.case-viewport'),track=carousel.querySelector('.case-track'),slides=[...carousel.querySelectorAll('.case-slide')],prev=carousel.querySelector('.case-arrow-prev'),next=carousel.querySelector('.case-arrow-next');let index=0,startX=0,dragging=false,base=0;const gap=()=>parseFloat(getComputedStyle(track).gap)||0;const step=()=>slides[0].getBoundingClientRect().width+gap();const max=()=>Math.max(0,track.scrollWidth-viewport.clientWidth);const offset=()=>Math.min(index*step(),max());const draw=(value=offset(),animate=true)=>{track.style.transition=animate?'transform 400ms ease-out':'none';track.style.transform=`translateX(${-value}px)`;prev.disabled=index===0;next.disabled=offset()>=max()-1};const move=dir=>{index=Math.max(0,Math.min(slides.length-1,index+dir));draw()};prev.addEventListener('click',()=>move(-1));next.addEventListener('click',()=>move(1));viewport.addEventListener('pointerdown',e=>{dragging=true;startX=e.clientX;base=offset();viewport.setPointerCapture(e.pointerId);draw(base,false)});viewport.addEventListener('pointermove',e=>{if(!dragging)return;draw(Math.max(0,Math.min(max(),base-(e.clientX-startX))),false)});const release=e=>{if(!dragging)return;const delta=e.clientX-startX;dragging=false;if(Math.abs(delta)>40)move(delta<0?1:-1);else draw()};viewport.addEventListener('pointerup',release);viewport.addEventListener('pointercancel',release);window.addEventListener('resize',()=>draw());draw()})();
+(() => {
+  let teardown = () => {}
+  const init = () => {
+    teardown()
+    const carousel = document.querySelector('.case-carousel')
+    if (!carousel) return
+    const viewport = carousel.querySelector('.case-viewport')
+    const track = carousel.querySelector('.case-track')
+    const slides = [...carousel.querySelectorAll('.case-slide')]
+    const prev = carousel.querySelector('.case-arrow-prev')
+    const next = carousel.querySelector('.case-arrow-next')
+    if (!viewport || !track || !slides.length || !prev || !next) return
+    let index = 0, startX = 0, startTime = 0, base = 0, dragging = false, pointerId = null
+    const gap = () => parseFloat(getComputedStyle(track).gap) || 0
+    const step = () => slides[0].getBoundingClientRect().width + gap()
+    const max = () => Math.max(0, track.scrollWidth - viewport.clientWidth)
+    const offset = () => Math.min(index * step(), max())
+    const draw = (value = offset(), animate = true) => {
+      track.style.transition = animate ? 'transform 280ms cubic-bezier(.22,.61,.36,1)' : 'none'
+      track.style.transform = `translateX(${-value}px)`
+      prev.disabled = index === 0
+      next.disabled = offset() >= max() - 1
+    }
+    const move = (direction) => {
+      index = Math.max(0, Math.min(Math.ceil(max() / Math.max(step(), 1)), index + direction))
+      draw()
+    }
+    const down = (event) => {
+      if (event.pointerType === 'mouse' && event.button !== 0) return
+      dragging = true; pointerId = event.pointerId; startX = event.clientX; startTime = performance.now(); base = offset()
+      viewport.setPointerCapture?.(pointerId); draw(base, false)
+    }
+    const drag = (event) => {
+      if (!dragging || event.pointerId !== pointerId) return
+      draw(Math.max(0, Math.min(max(), base - (event.clientX - startX))), false)
+    }
+    const release = (event) => {
+      if (!dragging || event.pointerId !== pointerId) return
+      const delta = event.clientX - startX
+      const velocity = Math.abs(delta) / Math.max(performance.now() - startTime, 1)
+      dragging = false; pointerId = null
+      if (Math.abs(delta) >= 28 || velocity >= .28) move(delta < 0 ? 1 : -1)
+      else draw()
+    }
+    const resize = () => draw()
+    prev.addEventListener('click', () => move(-1)); next.addEventListener('click', () => move(1))
+    viewport.addEventListener('pointerdown', down); viewport.addEventListener('pointermove', drag)
+    viewport.addEventListener('pointerup', release); viewport.addEventListener('pointercancel', release)
+    window.addEventListener('resize', resize)
+    teardown = () => {
+      viewport.removeEventListener('pointerdown', down); viewport.removeEventListener('pointermove', drag)
+      viewport.removeEventListener('pointerup', release); viewport.removeEventListener('pointercancel', release)
+      window.removeEventListener('resize', resize)
+    }
+    draw()
+  }
+  init()
+  window.addEventListener('lumion:cases', init)
+})()
